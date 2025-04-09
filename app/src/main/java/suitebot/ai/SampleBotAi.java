@@ -46,7 +46,7 @@ public class SampleBotAi implements BotAi
 		this.botId = botId;
 		this.gameState = gameState;
 
-		Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, 10);
+		Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, 12);
 		if (moveScores.isEmpty()) {
 			return Direction.DOWN;
 		} else {
