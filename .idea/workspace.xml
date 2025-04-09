@@ -4,80 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b0d1b945-1683-40b2-9c70-9dbad17048bb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/gradle_wrapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/SuiteBotKit.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/app/SuiteBotKit.app.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/app/SuiteBotKit.app.main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/app/SuiteBotKit.app.test.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/suitebot-java-kit.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/suitebot-java-kit.main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/suitebot-java-kit.test.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/BotServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/ai/BotAi.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/ai/SampleBotAi.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/game/GameState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/game/ImmutableGameState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/json/GameStateDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/json/JsonUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/json/YourBotIdDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/test/java/suitebot/BotAiRequestHandlerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/test/java/suitebot/game/DirectionTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/test/java/suitebot/game/GameStateFactoryTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/test/java/suitebot/game/ImmutableGameStateBuilderTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/test/java/suitebot/game/ImmutableGameStateTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/test/java/suitebot/game/MoveTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/test/java/suitebot/game/PointTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/test/java/suitebot/server/SimpleServerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/java/Client.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/lib/google-collections-0.9.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/lib/gson-2.4.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/lib/hamcrest-all-1.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/lib/jsr305-1.3.9.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/lib/junit-4.7.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/BotRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/BotRequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/BotServer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/ai/AnonymousBotAi.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/ai/BotAi.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/ai/SampleBotAi.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/game/Direction.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/game/Direction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/game/GameState.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/game/GameStateFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/game/GameStateFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/game/ImmutableGameState.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/game/Move.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/game/Move.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/game/Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/game/Point.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/serializers/SerializationUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/server/SimpleRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/server/SimpleRequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/suitebot/server/SimpleServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/server/SimpleServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/test/suitebot/BotAiRequestHandlerTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/test/suitebot/ai/SampleBotAiTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/suitebot/ai/SampleBotAiTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/test/suitebot/game/DirectionTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/test/suitebot/game/GameStateFactoryTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/test/suitebot/game/ImmutableGameStateBuilderTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/test/suitebot/game/ImmutableGameStateTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/test/suitebot/game/MoveTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/test/suitebot/game/PointTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/test/suitebot/server/SimpleServerTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitebot-java-kit.iml" beforeDir="false" />
-    </list>
+    <list default="true" id="b0d1b945-1683-40b2-9c70-9dbad17048bb" name="Changes" comment="Adding A star algorithm" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -99,35 +26,18 @@
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="SuiteBotKit" type="f1a62948:ProjectNode" />
+                <item name="SuiteBotClient" type="f1a62948:ProjectNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="SuiteBotKit" type="f1a62948:ProjectNode" />
+                <item name="SuiteBotClient" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="SuiteBotKit" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="application" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="SuiteBotKit" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="SuiteBotKit" type="f1a62948:ProjectNode" />
+                <item name="SuiteBotClient" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="verification" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="SuiteBotKit" type="f1a62948:ProjectNode" />
-                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
               </path>
             </expand>
             <select />
@@ -137,9 +47,22 @@
     </system>
   </component>
   <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="karima-branch" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -162,10 +85,12 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.BotServer (1).executor": "Run",
+    "Application.BotServer.executor": "Run",
     "Downloaded.Files.Path.Enabled": "false",
     "Gradle.BotAiRequestHandlerTest.executor": "Run",
     "Gradle.Build Client.executor": "Run",
     "Gradle.Build bot01.executor": "Run",
+    "Gradle.Build bot04.executor": "Run",
     "Gradle.Client [:BotServer.main()].executor": "Debug",
     "Gradle.DirectionTest.executor": "Run",
     "Gradle.GameStateFactoryTest.executor": "Run",
@@ -184,12 +109,15 @@
     "Gradle.bot01 [run].executor": "Run",
     "Gradle.bot01 [test].executor": "Run",
     "Gradle.bot01:app [:app:BotServer.main()].executor": "Debug",
+    "Gradle.bot04 [test].executor": "Run",
     "Repository.Attach.Annotations": "false",
     "Repository.Attach.JavaDocs": "false",
     "Repository.Attach.Sources": "false",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "karima-branch",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/webdev/SuiteBot/bots/bot01/app/src/test/java/suitebot",
     "node.js.detected.package.eslint": "true",
@@ -200,7 +128,7 @@
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.45632184",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler",
+    "settings.editor.selected.configurable": "settings.sync",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -210,10 +138,10 @@
       <recent name="C:\webdev\SuiteBot\bots\bot01\app\src\main\java" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.BotServer">
+  <component name="RunManager" selected="Gradle.bot04 [test]">
     <configuration name="BotServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="suitebot.BotServer" />
-      <module name="SuiteBotKit.app.main" />
+      <module name="SuiteBotClient.app" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="suitebot.*" />
@@ -296,52 +224,50 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="Tests in 'suitebot.game'" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="bot04 [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
+        <option name="scriptParameters" />
         <option name="taskDescriptions">
           <list />
         </option>
         <option name="taskNames">
           <list>
-            <option value=":app:test" />
-            <option value="--tests" />
-            <option value="&quot;suitebot.game.*&quot;" />
+            <option value="test" />
           </list>
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
+      <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Application.BotServer" />
+      <item itemvalue="Gradle.bot04 [test]" />
       <item itemvalue="Gradle.BotAiRequestHandlerTest" />
       <item itemvalue="Gradle.SampleBotAiTest" />
       <item itemvalue="Gradle.SimpleServerTest" />
-      <item itemvalue="Gradle.Tests in 'suitebot.game'" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.bot04 [test]" />
         <item itemvalue="Application.BotServer" />
         <item itemvalue="Gradle.SampleBotAiTest" />
         <item itemvalue="Gradle.SimpleServerTest" />
         <item itemvalue="Gradle.BotAiRequestHandlerTest" />
-        <item itemvalue="Gradle.Tests in 'suitebot.game'" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="jdk-1.8.0_402-corretto-1.8.0_402-4caba194b151-ae57be32" />
-        <option value="jdk-17.0.10-corretto-17.0.10-4caba194b151-5cd809f4" />
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
       </set>
     </attachedChunks>
   </component>
@@ -356,7 +282,19 @@
       <workItem from="1712228897773" duration="506000" />
       <workItem from="1712311579441" duration="5188000" />
       <workItem from="1712557696744" duration="17016000" />
+      <workItem from="1744191005189" duration="5994000" />
+      <workItem from="1744197626461" duration="3603000" />
+      <workItem from="1744204239154" duration="4684000" />
     </task>
+    <task id="LOCAL-00001" summary="Adding A star algorithm">
+      <option name="closed" value="true" />
+      <created>1744208400110</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1744208400110</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -372,6 +310,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Adding A star algorithm" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding A star algorithm" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
