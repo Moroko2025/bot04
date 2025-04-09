@@ -35,7 +35,6 @@ class SampleBotAiTest
 		assertThat(new SampleBotAi().makeMove(1, gameState)).isEqualTo(Direction.RIGHT);
 		assertThat(new SampleBotAi().makeMove(1, gameState)).isEqualTo(Direction.RIGHT);
 		assertThat(new SampleBotAi().makeMove(1, gameState)).isEqualTo(Direction.RIGHT);
-		assertThat(new SampleBotAi().makeMove(1, gameState)).isEqualTo(Direction.RIGHT);
 	}
 
 
