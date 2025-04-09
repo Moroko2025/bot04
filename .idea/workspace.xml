@@ -47,6 +47,19 @@
     </system>
   </component>
   <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="karima-branch" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="main" />
@@ -271,7 +284,7 @@
       <workItem from="1712557696744" duration="17016000" />
       <workItem from="1744191005189" duration="5994000" />
       <workItem from="1744197626461" duration="3603000" />
-      <workItem from="1744204239154" duration="4344000" />
+      <workItem from="1744204239154" duration="4684000" />
     </task>
     <task id="LOCAL-00001" summary="Adding A star algorithm">
       <option name="closed" value="true" />
