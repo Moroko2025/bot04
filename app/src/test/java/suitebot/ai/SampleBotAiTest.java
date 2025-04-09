@@ -25,9 +25,9 @@ class SampleBotAiTest
 	@Test
 	void testTranspassGrid()
 	{
-		String gameStateAsString = "     \n"+
-								   "     \n"+
-								   "     \n";
+		String gameStateAsString = "   \n"+
+								   "   \n"+
+								   "   \n";
 		GameState gameState = GameStateFactory.createFromString(gameStateAsString);
 
 		assertThat(new SampleBotAi().makeMove(1, gameState)).isEqualTo(Direction.RIGHT);
