@@ -21,4 +21,6 @@ public interface BotAi
 	 * @return the name of the bot
 	 */
 	String getName();
+
+
 }

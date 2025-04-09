@@ -4,16 +4,12 @@ import suitebot.game.Direction;
 import suitebot.game.GameState;
 import suitebot.game.ImmutableGameState;
 import suitebot.game.Point;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-import suitebot.strategies.AStarHeuristic;
-import java.util.Map;
-import java.util.Comparator;
+import suitebot.strategies.*;
 
 /**
  * Sample AI. The AI has some serious flaws, which is intentional.
@@ -46,33 +42,122 @@ public class SampleBotAi implements BotAi
 		this.botId = botId;
 		this.gameState = gameState;
 
-		Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, 12);
-		if (moveScores.isEmpty()) {
+		Map<Direction, Integer> astar= AStarHeuristic.evaluateMoves(botId, gameState, 15);
+		Map<Direction, Integer> monte = MonteCarloTreeSearch.evaluateMoves(botId, gameState, 15,50);
+		Map<Direction, Integer> flood = FloodFillHeuristic.evaluateMoves(botId, gameState, 15);
+
+
+		if (astar.isEmpty() && monte.isEmpty() && flood.isEmpty()) {
 			return Direction.DOWN;
 		} else {
-			// maximum score
-			int maxScore = Collections.max(moveScores.values());
 
-			// Find all the directions with maximum score
-			List<Direction> bestDirections = new ArrayList<>();
-			for (Map.Entry<Direction, Integer> entry : moveScores.entrySet()) {
-				if (entry.getValue() == maxScore) {
-					bestDirections.add(entry.getKey());
-				}
-			}
+			int maxScoreStar = Collections.max(astar.values());
+			System.out.println("Max scores a*: "+ maxScoreStar);
 
-			// If there are multiple directions with the same maximum score, choose the one that we know it's not headed to one
-			if (bestDirections.size() > 1) {
-				for (Direction direction : bestDirections) {
-					Point nextPosition = direction.from(gameState.getBotLocation(botId));
-					if (!gameState.getObstacleLocations().contains(nextPosition) && !gameState.getBotLocations().contains(nextPosition)) {
-						return direction;
+			int maxScoreFlood = Collections.max(flood.values());
+			System.out.println("Max score flood: "+ maxScoreFlood);
+
+			int maxScoreMonte = Collections.max(monte.values());
+			System.out.println("Max score monte: "+ maxScoreMonte);
+
+			if (Math.max(maxScoreStar, maxScoreFlood) == maxScoreStar){
+				/**
+				 * this one is for astar
+				 * */
+				// Find all the directions with maximum score
+				List<Direction> bestDirectionsAstar = new ArrayList<>();
+				for (Map.Entry<Direction, Integer> entry : astar.entrySet()) {
+					if (entry.getValue() == maxScoreStar) {
+						bestDirectionsAstar.add(entry.getKey());
 					}
 				}
+				System.out.println("Best directions star: "+ bestDirectionsAstar);
+				// If there are multiple directions with the same maximum score, choose the one that we know it's not headed to one
+				if (bestDirectionsAstar.size() > 1) {
+					for (Direction directionA : bestDirectionsAstar) {
+						Point nextPosition = directionA.from(gameState.getBotLocation(botId));
+						if (!gameState.getObstacleLocations().contains(nextPosition) && !gameState.getBotLocations().contains(nextPosition)) {
+							System.out.println("1 Direction star: "+ directionA);
+							return directionA;
+						}
+					}
+				}
+				// if no one is found avoiding obstacles, just return the first one.
+				System.out.println("2 Direction star: "+ maxScoreStar);
+				return bestDirectionsAstar.get(0);
 			}
 
-			// if no one is found avoiding obstacles, just return the first one.
-			return bestDirections.get(0);
+			else if (Math.max(maxScoreFlood, maxScoreMonte) == maxScoreMonte){
+				/**
+				 * this one is for monte
+				 * */
+				// Find all the directions with maximum score
+				List<Direction> bestDirectionsMonte = new ArrayList<>();
+				for (Map.Entry<Direction, Integer> entry : monte.entrySet()) {
+					if (entry.getValue() == maxScoreMonte) {
+						bestDirectionsMonte.add(entry.getKey());
+					}
+				}
+				System.out.println("Best directions monte: "+ bestDirectionsMonte);
+				// If there are multiple directions with the same maximum score, choose the one that we know it's not headed to one
+				if (bestDirectionsMonte.size() > 1) {
+					for (Direction directionM : bestDirectionsMonte) {
+						Point nextPosition = directionM.from(gameState.getBotLocation(botId));
+						if (!gameState.getObstacleLocations().contains(nextPosition) && !gameState.getBotLocations().contains(nextPosition)) {
+							System.out.println("1 Direction monte: "+ directionM);
+							return directionM;
+						}
+					}
+				}
+				// if no one is found avoiding obstacles, just return the first one.
+				System.out.println("2 Direction monte: "+ maxScoreMonte);
+				return bestDirectionsMonte.get(0);
+			}
+			else {
+				/***
+				 *
+				 * this one is for flood
+				 */
+				// Find all the directions with maximum score
+				List<Direction> bestDirectionsFlood = new ArrayList<>();
+				for (Map.Entry<Direction, Integer> entry : flood.entrySet()) {
+					if (entry.getValue() == maxScoreFlood) {
+						bestDirectionsFlood.add(entry.getKey());
+					}
+				}
+				System.out.println("Best directions Flood: "+ bestDirectionsFlood);
+				// If there are multiple directions with the same maximum score, choose the one that we know it's not headed to one
+				if (bestDirectionsFlood.size() > 1) {
+					for (Direction directionF : bestDirectionsFlood) {
+						Point nextPosition = directionF.from(gameState.getBotLocation(botId));
+						if (!gameState.getObstacleLocations().contains(nextPosition) && !gameState.getBotLocations().contains(nextPosition)) {
+							System.out.println("1 Direction Flood: "+ directionF);
+							return directionF;
+						}
+					}
+				}
+				// if no one is found avoiding obstacles, just return the first one.
+				System.out.println("2 Direction Flood: "+ maxScoreFlood);
+				return bestDirectionsFlood.get(0);
+			}
+
+
+
+
+
+
+//			maxx = Math.max(bestDirectionsFlood.get(0), bestDirectionsMonte.get(0))
+//			return Math.max(bestDirectionsAstar.get(0), maxx);
+//			ArrayList<Map<Direction,Integer>> fi = new ArrayList<Map<Direction,Integer>>() {
+//			};
+//
+//			fi.add(astar);
+//			fi.add(monte);
+//			fi.add(flood);
+//
+//			HashMap<Direction,ArrayList<Map<Direction,Integer>>> fin = new HashMap<Direction, ArrayList<Map<Direction,Integer>>>();
+//			fin.put(bestDirectionsFlood.get(0), fi);
+
 		}
 	}
 

@@ -54,6 +54,7 @@ class AStarHeuristicTest {
         int botId = 1;
         int maxDepth = 9;
         Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, maxDepth);
+        System.out.println(moveScores);
         printGameState(gameState, moveScores);
         assertEquals(49, moveScores.get(Direction.RIGHT));
         assertEquals(46, moveScores.get(Direction.DOWN));
@@ -96,6 +97,7 @@ class AStarHeuristicTest {
         int botId = 1;
         int maxDepth = 9;
         Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, maxDepth);
+        System.out.println(moveScores);
         printGameState(gameState, moveScores);
         assertEquals(29, moveScores.get(Direction.UP));
         assertEquals(22, moveScores.get(Direction.RIGHT));
