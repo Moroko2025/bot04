@@ -111,7 +111,6 @@ public class MonteCarloTreeSearch {
             visited.add(current);
             score++;
         }
-
         return score;
     }
 
