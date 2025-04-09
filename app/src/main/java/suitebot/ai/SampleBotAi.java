@@ -57,18 +57,17 @@ public class SampleBotAi implements BotAi
 		//TODO: this is just example app,
 		// you should implement exception handling, timing verification, and proper algorithm ;o) ...
 
+		return Stream.of(
+				safeDirectionSupplier
+		)
+				.map(Supplier::get)
+				.map(Stream::findFirst)
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.findFirst()
+				.orElse(Direction.DOWN);
 
-		// return Stream.of(
-		// 		safeDirectionSupplier
-		// )
-		// 		.map(Supplier::get)
-		// 		.map(Stream::findFirst)
-		// 		.filter(Optional::isPresent)
-		// 		.map(Optional::get)
-		// 		.findFirst()
-		// 		.orElse(Direction.DOWN);
-
-		return FloodFillHeuristic(directions);
+		// return FloodFillHeuristic(directions);
 	}
 
 	private Point destination(Direction direction)
