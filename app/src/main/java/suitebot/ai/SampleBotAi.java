@@ -41,34 +41,6 @@ public class SampleBotAi implements BotAi
 	 * otherwise, go down.
 	 */
 
-//	@Override
-//	public Direction makeMove(int botId, GameState gameState)
-//	{
-//		this.botId = botId;
-//		this.gameState = gameState;
-//
-//
-//		//Available directions - based on game plan orientation, not the bot actual direction
-//		List<Direction> directions = new ArrayList<>(ImmutableList.of(
-//				Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN));
-//		//random schuffle directions
-//		Collections.shuffle(directions);
-//
-//		Supplier<Stream<Direction>> safeDirectionSupplier = () -> directions.stream().filter(isSafeDirection);
-//
-//		//selects first available free direction (random - because the direction list is in different order every time)
-//		//TODO: this is just example app,
-//		// you should implement exception handling, timing verification, and proper algorithm ;o) ...
-//		return Stream.of(
-//				safeDirectionSupplier
-//		)
-//				.map(Supplier::get)
-//				.map(Stream::findFirst)
-//				.filter(Optional::isPresent)
-//				.map(Optional::get)
-//				.findFirst()
-//				.orElse(Direction.DOWN);
-//	}
 	@Override
 	public Direction makeMove(int botId, GameState gameState)
 	{
@@ -77,13 +49,12 @@ public class SampleBotAi implements BotAi
 
 		Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, 10);
 		if (moveScores.isEmpty()) {
-			// If there are no possible moves, return Down as a default
 			return Direction.DOWN;
 		} else {
-			// Find the maximum score
+			// maximum score
 			int maxScore = Collections.max(moveScores.values());
 
-			// Find all directions with the maximum score
+			// Find all the directions with maximum score
 			List<Direction> bestDirections = new ArrayList<>();
 			for (Map.Entry<Direction, Integer> entry : moveScores.entrySet()) {
 				if (entry.getValue() == maxScore) {
@@ -91,7 +62,7 @@ public class SampleBotAi implements BotAi
 				}
 			}
 
-			// If there are multiple directions with the same maximum score, choose the one that avoids obstacles
+			// If there are multiple directions with the same maximum score, choose the one that we know it's not headed to one
 			if (bestDirections.size() > 1) {
 				for (Direction direction : bestDirections) {
 					Point nextPosition = direction.from(gameState.getBotLocation(botId));
@@ -101,12 +72,10 @@ public class SampleBotAi implements BotAi
 				}
 			}
 
-			// If no direction avoids obstacles, return the first direction with the maximum score
+			// if no one is found avoiding obstacles, just return the first one.
 			return bestDirections.get(0);
 		}
 	}
-
-
 
 
 	private Point destination(Direction direction)
@@ -130,6 +99,6 @@ public class SampleBotAi implements BotAi
 	@Override
 	public String getName()
 	{
-		return "Sample AI";
+		return "Chill guys";
 	}
 }
