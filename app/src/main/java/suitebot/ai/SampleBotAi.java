@@ -3,6 +3,7 @@ package suitebot.ai;
 import com.google.common.collect.ImmutableList;
 import suitebot.game.Direction;
 import suitebot.game.GameState;
+import suitebot.game.ImmutableGameState;
 import suitebot.game.Point;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
+import suitebot.strategies.FloodFillHeuristic;
 /**
  * Sample AI. The AI has some serious flaws, which is intentional.
  */
@@ -55,7 +56,7 @@ public class SampleBotAi implements BotAi
 		//selects first available free direction (random - because the direction list is in different order every time)
 		//TODO: this is just example app,
 		// you should implement exception handling, timing verification, and proper algorithm ;o) ...
-		return Stream.of(
+		/*return Stream.of(
 				safeDirectionSupplier
 		)
 				.map(Supplier::get)
@@ -63,7 +64,8 @@ public class SampleBotAi implements BotAi
 				.filter(Optional::isPresent)
 				.map(Optional::get)
 				.findFirst()
-				.orElse(Direction.DOWN);
+				.orElse(Direction.DOWN);*/
+		return FloodFillHeuristic(directions);
 	}
 
 	private Point destination(Direction direction)
