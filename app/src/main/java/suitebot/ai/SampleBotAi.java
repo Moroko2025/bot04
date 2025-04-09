@@ -5,15 +5,21 @@ import suitebot.game.GameState;
 import suitebot.game.ImmutableGameState;
 import suitebot.game.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import suitebot.strategies.AStarHeuristic;
+import suitebot.strategies.FloodFillHeuristic;
+
 import java.util.Map;
 import java.util.Comparator;
+import java.util.HashSet;
 
 /**
  * Sample AI. The AI has some serious flaws, which is intentional.
@@ -41,40 +47,88 @@ public class SampleBotAi implements BotAi
 	 */
 
 	@Override
-	public Direction makeMove(int botId, GameState gameState)
-	{
-		this.botId = botId;
-		this.gameState = gameState;
+	public Direction makeMove(int botId, GameState gameState) {
+        // Combine obstacles with other bots
+        Set<Point> allObstacles = new HashSet<>(gameState.getObstacleLocations());
+        gameState.getLiveBotIds().stream()
+            .filter(id -> id != botId)
+            .map(gameState::getBotLocation)
+            .forEach(allObstacles::add);
 
-		Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, 12);
-		if (moveScores.isEmpty()) {
-			return Direction.DOWN;
-		} else {
-			// maximum score
-			int maxScore = Collections.max(moveScores.values());
+        // Create enhanced state
+        GameState enhancedState = ImmutableGameState.builder(gameState)
+            .setObstacles(allObstacles)
+            .build();
 
-			// Find all the directions with maximum score
-			List<Direction> bestDirections = new ArrayList<>();
-			for (Map.Entry<Direction, Integer> entry : moveScores.entrySet()) {
-				if (entry.getValue() == maxScore) {
-					bestDirections.add(entry.getKey());
-				}
-			}
+        // Get A* move evaluations
+        Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(
+            botId, 
+            enhancedState, 
+            15
+        );
 
-			// If there are multiple directions with the same maximum score, choose the one that we know it's not headed to one
-			if (bestDirections.size() > 1) {
-				for (Direction direction : bestDirections) {
-					Point nextPosition = direction.from(gameState.getBotLocation(botId));
-					if (!gameState.getObstacleLocations().contains(nextPosition) && !gameState.getBotLocations().contains(nextPosition)) {
-						return direction;
-					}
-				}
-			}
+        // Select best direction
+        return moveScores.entrySet().stream()
+            .max(Map.Entry.comparingByValue())
+            .map(Map.Entry::getKey)
+            .orElseGet(() -> findSafeMove(botId, gameState));
+    }
 
-			// if no one is found avoiding obstacles, just return the first one.
-			return bestDirections.get(0);
-		}
-	}
+    private Direction findSafeMove(int botId, GameState state) {
+        Point current = state.getBotLocation(botId);
+        return Arrays.stream(Direction.values())
+            .filter(dir -> isSafeMove(dir.from(current), state))
+            .findFirst()
+            .orElse(Direction.DOWN);
+    }
+
+    private boolean isSafeMove(Point point, GameState state) {
+        return !state.getObstacleLocations().contains(point) &&
+               !state.getBotLocations().contains(point);
+    }
+
+	//flood fill 
+	// @Override
+    // public Direction makeMove(int botId, GameState gameState) {
+    //     // Create enhanced obstacles including other bots
+    //     Set<Point> allObstacles = new HashSet<>(gameState.getObstacleLocations());
+    //     gameState.getLiveBotIds().stream()
+    //         .filter(id -> id != botId)
+    //         .map(gameState::getBotLocation)
+    //         .forEach(allObstacles::add);
+
+    //     // Create enhanced game state
+    //     GameState enhancedState = ImmutableGameState.builder(gameState)
+    //         .setObstacles(allObstacles)
+    //         .build();
+
+    //     // Get move scores using FloodFillHeuristic
+    //     Map<Direction, Integer> moveScores = FloodFillHeuristic.evaluateMoves(
+    //         botId, 
+    //         enhancedState, 
+    //         MAX_DEPTH
+    //     );
+
+    //     // Select best move
+    //     return moveScores.entrySet().stream()
+    //         .max(Map.Entry.comparingByValue())
+    //         .map(Map.Entry::getKey)
+    //         .orElseGet(() -> findSafeMove(botId, gameState));
+    // }
+
+    // private Direction findSafeMove(int botId, GameState state) {
+    //     return Arrays.stream(Direction.values())
+    //         .filter(dir -> isValidMove(state, botId, dir))
+    //         .findFirst()
+    //         .orElse(Direction.DOWN);
+    // }
+
+    // private boolean isValidMove(GameState state, int botId, Direction dir) {
+    //     Point next = dir.from(state.getBotLocation(botId));
+    //     return !state.getObstacleLocations().contains(next) &&
+    //            !state.getBotLocations().contains(next);
+    // }
+
 
 
 	private Point destination(Direction direction)
