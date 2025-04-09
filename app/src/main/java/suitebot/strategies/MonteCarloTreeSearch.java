@@ -59,6 +59,10 @@ public class MonteCarloTreeSearch {
         Map<Direction, Integer> moveScores = new EnumMap<>(Direction.class);
         Point botLocation = gameState.getBotLocation(botId);
         Set<Point> obstacles = gameState.getObstacleLocations();
+        Set<Point> botObstacles = gameState.getBotLocations();
+
+//        // Add the bot locations as obstacles
+        botObstacles.addAll(obstacles);
         int width = gameState.getPlanWidth();
         int height = gameState.getPlanHeight();
 

@@ -69,7 +69,6 @@ public class AStarHeuristic {
                 moveScores.put(direction, 0); // Ensure all directions have a value
             }
         }
-
         return moveScores;
     }
 
