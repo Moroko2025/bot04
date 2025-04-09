@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import suitebot.game.Direction;
 import suitebot.game.GameState;
 import suitebot.game.Point;
-
+import suitebot.game.GameStateFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +30,7 @@ public class SampleBotAi implements BotAi
 
 	private final Predicate<Direction> isSafeDirection = direction -> (
 			!gameState.getObstacleLocations().contains(destination(direction)) &&
-			!gameState.gextBotLocations().contains(destination(direction))
+			!gameState.getBotLocations().contains(destination(direction))
 	);
 
 	/**
@@ -67,29 +67,33 @@ public class SampleBotAi implements BotAi
 	}
 
 	private Point destination(Direction direction)
-	{
+	{ 
 		Point botLocation = gameState.getBotLocation(botId);
 		/**
+		 * 
 		 * TODO: this method does not care about game plan is without borders
 		 */
+		Point stepDestination;
+
 		if (gameState.getPlanHeight() == botLocation.y) {
-			stepDestination = direction.from(0,botLocation.y);
+			stepDestination = direction.from(new Point(0, botLocation.y+1));
 			return stepDestination;
+		}
+		// if (gameState.getPlanHeight() == 0) {
+		// 	stepDestination = direction.from(GameStateFactory.assertRectangularPlan ,botLocation.y+1);
+		// 	return stepDestination;
 			
-		if (gameState.getPlanWidth() == "\n") {
-			stepDestination = direction.from(botLocation.y,0);
-			return stepDestination;
+		// if (gameState.getPlanWidth() == "\n") {
+		// 	stepDestination = direction.from(new Point(botLocation.y +1,0));
+		// 	return stepDestination;
+		// }
 
-		}
 		if (gameState.getPlanWidth() == botLocation.x) {
-			stepDestination = direction.from(botLocation.x,0);
+			stepDestination = direction.from(new Point(botLocation.x +1,0));
 			return stepDestination;
-
 		}
-
-	}
 		
-		Point stepDestination = direction.from(botLocation);
+		stepDestination = direction.from(botLocation);
 		return stepDestination;
 	}
 

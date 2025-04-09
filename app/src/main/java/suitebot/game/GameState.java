@@ -56,12 +56,12 @@ public interface GameState
 	 */
 	Set<Point> getObstacleLocations();
 
-	/**
-	 * Returns the coordinates of the new position in the other side of the gird
-	 *
-	 * @return the location of the bot
-	 */
-	Point getGridPosition(int botId);
+	// /**
+	//  * Returns the coordinates of the new position in the other side of the gird
+	//  *
+	//  * @return the location of the bot
+	//  */
+	// Point getGridPosition(int botId);
 
 	
 }
