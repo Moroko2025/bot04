@@ -2,6 +2,7 @@ package suitebot.game;
 
 import java.util.Objects;
 
+// this class returns the location (x,y) of our bot
 public class Point
 {
 	public final int x;

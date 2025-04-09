@@ -30,7 +30,7 @@ public class SampleBotAi implements BotAi
 
 	private final Predicate<Direction> isSafeDirection = direction -> (
 			!gameState.getObstacleLocations().contains(destination(direction)) &&
-			!gameState.getBotLocations().contains(destination(direction))
+			!gameState.gextBotLocations().contains(destination(direction))
 	);
 
 	/**
@@ -47,7 +47,7 @@ public class SampleBotAi implements BotAi
 		//Available directions - based on game plan orientation, not the bot actual direction
 		List<Direction> directions = new ArrayList<>(ImmutableList.of(
 				Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN));
-		//random schuffle directions
+		//random shuffle directions
 		Collections.shuffle(directions);
 
 		Supplier<Stream<Direction>> safeDirectionSupplier = () -> directions.stream().filter(isSafeDirection);
@@ -72,14 +72,30 @@ public class SampleBotAi implements BotAi
 		/**
 		 * TODO: this method does not care about game plan is without borders
 		 */
-		Point stepDestination = direction.from(botLocation);
+		if (gameState.getPlanHeight() == botLocation.y) {
+			stepDestination = direction.from(0,botLocation.y);
+			return stepDestination;
+			
+		if (gameState.getPlanWidth() == "\n") {
+			stepDestination = direction.from(botLocation.y,0);
+			return stepDestination;
 
+		}
+		if (gameState.getPlanWidth() == botLocation.x) {
+			stepDestination = direction.from(botLocation.x,0);
+			return stepDestination;
+
+		}
+
+	}
+		
+		Point stepDestination = direction.from(botLocation);
 		return stepDestination;
 	}
 
 	@Override
 	public String getName()
 	{
-		return "Sample AI";
+		return "Chill Guys";
 	}
 }
