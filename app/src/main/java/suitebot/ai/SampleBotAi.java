@@ -1,10 +1,9 @@
 package suitebot.ai;
-
 import com.google.common.collect.ImmutableList;
 import suitebot.game.Direction;
 import suitebot.game.GameState;
+import suitebot.game.ImmutableGameState;
 import suitebot.game.Point;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,10 +11,10 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
 import suitebot.strategies.AStarHeuristic;
 import java.util.Map;
 import java.util.Comparator;
+
 /**
  * Sample AI. The AI has some serious flaws, which is intentional.
  */
