@@ -20,7 +20,6 @@ class SampleBotAiTest
 	}
 
 
-
 	@Test
 	void testAvoidsObstacles2()
 	{

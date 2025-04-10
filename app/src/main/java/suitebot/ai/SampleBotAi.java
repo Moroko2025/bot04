@@ -139,6 +139,8 @@ public class SampleBotAi implements BotAi
 			// Skip immediate collisions
 			if (allObstacles.contains(nextPos)) {
 				continue;
+
+
 			}
 
 			// Calculate free spaces in immediate vicinity (1 step in each direction)
