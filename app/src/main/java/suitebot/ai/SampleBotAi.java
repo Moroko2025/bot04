@@ -140,8 +140,8 @@ public class SampleBotAi implements BotAi
 				System.out.println("2 Direction Flood: "+ maxScoreFlood);
 				return bestDirectionsFlood.get(0);
 			}
-
-
+		}
+	}
 
 
 
@@ -158,8 +158,6 @@ public class SampleBotAi implements BotAi
 //			HashMap<Direction,ArrayList<Map<Direction,Integer>>> fin = new HashMap<Direction, ArrayList<Map<Direction,Integer>>>();
 //			fin.put(bestDirectionsFlood.get(0), fi);
 
-		}
-	}
 
 
 	private Point destination(Direction direction)

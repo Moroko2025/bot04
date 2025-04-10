@@ -94,10 +94,11 @@ class SampleBotAiTest
 
 	@Test
 	void testMoveRequest() {
+		System.out.println("first test");
 		GameState gameState = GameStateFactory.createFromString("**********\n" +
 				" 1 *******\n" +
-				"* ********\n" +
-				"*  *******\n" +
+				"*    *****\n" +
+				"** * *****\n" +
 				"* ********\n" +
 				"*   ******\n" +
 				"*        *\n" +
@@ -108,7 +109,7 @@ class SampleBotAiTest
 		int maxDepth = 9;
 		Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, maxDepth);
 		Direction direction = sampleBot.makeMove(botId, gameState);
-		System.out.println(direction);
+		System.out.println("direction: " +  direction);
 		printGameState(gameState, moveScores);
 //		assertEquals(29, moveScores.get(Direction.UP));
 //		assertEquals(22, moveScores.get(Direction.RIGHT));
@@ -118,10 +119,11 @@ class SampleBotAiTest
 
 @Test
 void testMoveRequest2() {
+		System.out.println("second test");
 	GameState gameState = GameStateFactory.createFromString("**********\n" +
-			" 1 *******\n" +
-			"*    *****\n" +
-			"** *******\n" +
+			" * *******\n" +
+			"*1   *****\n" +
+			"** * *****\n" +
 			"* ********\n" +
 			"*   ******\n" +
 			"*        *\n" +
