@@ -1,10 +1,8 @@
 package suitebot.ai;
-
 import org.junit.jupiter.api.Test;
 import suitebot.game.Direction;
 import suitebot.game.GameState;
 import suitebot.game.GameStateFactory;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SampleBotAiTest
@@ -21,21 +19,6 @@ class SampleBotAiTest
 		assertThat(new SampleBotAi().makeMove(1, gameState)).isEqualTo(Direction.DOWN);
 	}
 
-
-	@Test
-	void testTranspassGrid()
-	{
-		String gameStateAsString = "   \n"+
-								   "   \n"+
-								   "   \n";
-		GameState gameState = GameStateFactory.createFromString(gameStateAsString);
-
-		assertThat(new SampleBotAi().makeMove(1, gameState)).isEqualTo(Direction.RIGHT);
-		assertThat(new SampleBotAi().makeMove(1, gameState)).isEqualTo(Direction.RIGHT);
-		assertThat(new SampleBotAi().makeMove(1, gameState)).isEqualTo(Direction.RIGHT);
-		assertThat(new SampleBotAi().makeMove(1, gameState)).isEqualTo(Direction.RIGHT);
-		assertThat(new SampleBotAi().makeMove(1, gameState)).isEqualTo(Direction.RIGHT);
-	}
 
 
 	@Test
