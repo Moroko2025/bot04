@@ -105,6 +105,7 @@ public class SampleBotAi implements BotAi
 //				.findFirst()
 //				.orElse(Direction.DOWN);
 //	}
+
 	public Direction makeMove(int botId, GameState gameState) {
 		this.botId = botId;
 		this.gameState = gameState;

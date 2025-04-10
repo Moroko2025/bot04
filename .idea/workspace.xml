@@ -7,6 +7,7 @@
     <list default="true" id="b0d1b945-1683-40b2-9c70-9dbad17048bb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/suitebot/ai/SampleBotAi.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/ai/SampleBotAi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/suitebot/ai/SampleBotAiTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/suitebot/ai/SampleBotAiTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/test/java/suitebot/strategies/AStarHeuristicTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/suitebot/strategies/AStarHeuristicTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -73,54 +74,54 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.BotServer (1).executor&quot;: &quot;Run&quot;,
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
-    &quot;Gradle.BotAiRequestHandlerTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build Client.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build bot01.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Client [:BotServer.main()].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.DirectionTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.GameStateFactoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ImmutableGameStateBuilderTest (1).executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ImmutableGameStateBuilderTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ImmutableGameStateTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.PointTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.SampleBotAiTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.SampleBotAiTest.testAvoidsObstacles2.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.SimpleServerTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Tests in 'SuiteBotKit.app.test'.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Tests in 'suitebot'.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Tests in 'suitebot.game'.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Upgrade Gradle wrapper.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bot01 [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bot01 [run].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bot01 [test].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bot01:app [:app:BotServer.main()].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.bot04 [check].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bot04 [test].executor&quot;: &quot;Run&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/webdev/SuiteBot/bots/bot01/app/src/test/java/suitebot&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.45632184&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.BotServer (1).executor": "Run",
+    "Downloaded.Files.Path.Enabled": "false",
+    "Gradle.BotAiRequestHandlerTest.executor": "Run",
+    "Gradle.Build Client.executor": "Run",
+    "Gradle.Build bot01.executor": "Run",
+    "Gradle.Client [:BotServer.main()].executor": "Debug",
+    "Gradle.DirectionTest.executor": "Run",
+    "Gradle.GameStateFactoryTest.executor": "Run",
+    "Gradle.ImmutableGameStateBuilderTest (1).executor": "Run",
+    "Gradle.ImmutableGameStateBuilderTest.executor": "Run",
+    "Gradle.ImmutableGameStateTest.executor": "Run",
+    "Gradle.PointTest.executor": "Run",
+    "Gradle.SampleBotAiTest.executor": "Run",
+    "Gradle.SampleBotAiTest.testAvoidsObstacles2.executor": "Debug",
+    "Gradle.SimpleServerTest.executor": "Run",
+    "Gradle.Tests in 'SuiteBotKit.app.test'.executor": "Run",
+    "Gradle.Tests in 'suitebot'.executor": "Run",
+    "Gradle.Tests in 'suitebot.game'.executor": "Run",
+    "Gradle.Upgrade Gradle wrapper.executor": "Run",
+    "Gradle.bot01 [build].executor": "Run",
+    "Gradle.bot01 [run].executor": "Run",
+    "Gradle.bot01 [test].executor": "Run",
+    "Gradle.bot01:app [:app:BotServer.main()].executor": "Debug",
+    "Gradle.bot04 [check].executor": "Run",
+    "Gradle.bot04 [test].executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "karima-branch",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/webdev/SuiteBot/bots/bot01/app/src/test/java/suitebot",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.45632184",
+    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\webdev\SuiteBot\bots\bot01\app\src\test\java\suitebot" />
