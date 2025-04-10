@@ -38,75 +38,7 @@ public class SampleBotAi implements BotAi
 					!gameState.getBotLocations().contains(destination(direction))
 	);
 
-	/**
-	 * If a random safe move can be made (one that avoids any obstacles), do it;
-	 * otherwise, go down.
-	 */
 
-//	@Override
-//	public Direction makeMove(int botId, GameState gameState)
-//	{
-//		this.botId = botId;
-//		this.gameState = gameState;
-//
-//		Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, 12);
-//		if (moveScores.isEmpty()) {
-//			return Direction.DOWN;
-//		} else {
-//			// maximum score
-//			int maxScore = Collections.max(moveScores.values());
-//
-//			// Find all the directions with maximum score
-//			List<Direction> bestDirections = new ArrayList<>();
-//			for (Map.Entry<Direction, Integer> entry : moveScores.entrySet()) {
-//				if (entry.getValue() == maxScore) {
-//					bestDirections.add(entry.getKey());
-//				}
-//			}
-//
-//			// If there are multiple directions with the same maximum score, choose the one that we know it's not headed to one
-//			if (bestDirections.size() > 1) {
-//				for (Direction direction : bestDirections) {
-//					Point nextPosition = direction.from(gameState.getBotLocation(botId));
-//					if (!gameState.getObstacleLocations().contains(nextPosition) && !gameState.getBotLocations().contains(nextPosition)) {
-//						return direction;
-//					}
-//				}
-//			}
-//
-//			// if no one is found avoiding obstacles, just return the first one.
-//			return bestDirections.get(0);
-//		}
-//	}
-//	@Override
-//	public Direction makeMove(int botId, GameState gameState) {
-//		this.botId = botId;
-//		this.gameState = gameState;
-//
-//		// Use the A* heuristic to evaluate each possible move
-//		Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, 20); // maxDepth of 15
-//
-//		// Filter out unsafe directions (those that would lead to immediate collision)
-//		List<Direction> safeDirections = moveScores.entrySet().stream()
-//				.filter(entry -> isSafeDirection.test(entry.getKey()))
-//				.sorted(Map.Entry.<Direction, Integer>comparingByValue().reversed()) // Sort by score in descending order
-//				.map(Map.Entry::getKey)
-//				.collect(Collectors.toList());
-//
-//		// If there are safe directions, choose the one with the highest score
-//		if (!safeDirections.isEmpty()) {
-//			return safeDirections.get(0);
-//		}
-//
-//		// If no safe directions, fall back to the original random method
-//		List<Direction> directions = new ArrayList<>(ImmutableList.of(
-//				Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN));
-//		Collections.shuffle(directions);
-//		return directions.stream()
-//				.filter(isSafeDirection)
-//				.findFirst()
-//				.orElse(Direction.DOWN);
-//	}
 	public Direction makeMove(int botId, GameState gameState) {
 		this.botId = botId;
 		this.gameState = gameState;
@@ -119,16 +51,16 @@ public class SampleBotAi implements BotAi
 				allObstacles.add(botPos);
 			}
 		}
-		// Step 1: Use FloodFill to evaluate immediate moves (maintain original strategy)
 		Map<Direction, Integer> floodFillScores = FloodFillHeuristic.evaluateMoves(botId, gameState, 20);
-		// Step 2: Use Monte Carlo simulation to improve move selection
 		Map<Direction, Double> monteCarloScores = runMonteCarloSimulation(botLocation, allObstacles);
+
 		// Combine both strategies
 		List<Direction> validDirections = new ArrayList<>();
 		Map<Direction, Double> combinedScores = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			Point nextPos = dir.from(botLocation);
 			nextPos = wrapAround(nextPos, gameState.getPlanWidth(), gameState.getPlanHeight());
+
 			// Skip immediate collisions
 			if (allObstacles.contains(nextPos)) {
 				continue;
@@ -136,7 +68,7 @@ public class SampleBotAi implements BotAi
 			validDirections.add(dir);
 			// Calculate free spaces (from original code)
 			int freeSpaces = countFreeSpaces(nextPos, allObstacles);
-			// Combine scores with weights (adjust weights for fine-tuning)
+
 			double floodFillScore = floodFillScores.getOrDefault(dir, 0) * 1.0;
 			double monteCarloScore = monteCarloScores.getOrDefault(dir, 0.0) * 5.0; // Higher weight for Monte Carlo
 			double freeSpaceScore = freeSpaces * 0.5;
@@ -240,12 +172,9 @@ public class SampleBotAi implements BotAi
 			currentPos = wrapAround(currentPos, gameState.getPlanWidth(), gameState.getPlanHeight());
 			// Add position to simulated path
 			simulatedPath.add(new Point(currentPos.x, currentPos.y));
-			// Add to score - higher scores for later steps (survived longer)
 			score += (step + 1) * 0.5;
-			// Add some randomness to score to prevent getting stuck in local maxima
 			score += random.nextDouble() * 0.1;
 		}
-		// Add final position evaluation - count free spaces around the final position
 		int freeSpacesAtEnd = 0;
 		for (Direction dir : Direction.values()) {
 			Point checkPos = dir.from(currentPos);
@@ -254,11 +183,11 @@ public class SampleBotAi implements BotAi
 				freeSpacesAtEnd++;
 			}
 		}
-		// Bonus for ending in a position with more free spaces
 		score += freeSpacesAtEnd * 2.0;
 		return score;
 	}
-	// Helper method to handle wrap-around (unchanged)
+
+	// Helper method to handle wrap-around
 	private Point wrapAround(Point point, int width, int height) {
 		int x = (point.x + width) % width;
 		int y = (point.y + height) % height;
