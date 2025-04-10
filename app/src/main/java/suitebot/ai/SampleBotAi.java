@@ -42,9 +42,10 @@ public class SampleBotAi implements BotAi
 	public Direction makeMove(int botId, GameState gameState) {
 		this.botId = botId;
 		this.gameState = gameState;
-		// Get current location
+
+		// current location
 		Point botLocation = gameState.getBotLocation(botId);
-		// Get obstacles including other bots
+
 		Set<Point> allObstacles = new HashSet<>(gameState.getObstacleLocations());
 		for (Point botPos : gameState.getBotLocations()) {
 			if (!botPos.equals(botLocation)) {
@@ -87,7 +88,7 @@ public class SampleBotAi implements BotAi
 			}
 			return bestDir;
 		}
-		// If no good moves, try random directions as a last resort
+		// If no good moves, try random directions
 		List<Direction> directions = new ArrayList<>(Arrays.asList(
 				Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN));
 		Collections.shuffle(directions);
@@ -98,7 +99,7 @@ public class SampleBotAi implements BotAi
 				return dir;
 			}
 		}
-		// If all else fails
+		// If everything fails, do this
 		return Direction.DOWN;
 	}
 	/**
@@ -120,7 +121,8 @@ public class SampleBotAi implements BotAi
 	 */
 	private Map<Direction, Double> runMonteCarloSimulation(Point botLocation, Set<Point> obstacles) {
 		Map<Direction, Double> scores = new EnumMap<>(Direction.class);
-		int numSimulations = 500; // Adjust based on performance needs
+		int numSimulations = 500;
+
 		// For each possible direction
 		for (Direction dir : Direction.values()) {
 			Point nextPos = dir.from(botLocation);
@@ -148,12 +150,13 @@ public class SampleBotAi implements BotAi
 		Point currentPos = new Point(startPos.x, startPos.y);
 		double score = 0.0;
 		Random random = new Random();
-		// Add starting position to the path (simulating bot's trail)
+
+
 		Set<Point> simulatedPath = new HashSet<>();
 		simulatedPath.add(new Point(currentPos.x, currentPos.y));
-		// Run the simulation for specified depth
+
 		for (int step = 0; step < depth; step++) {
-			// Get valid directions (those that don't lead to immediate collision)
+
 			List<Direction> validDirections = new ArrayList<>();
 			for (Direction dir : Direction.values()) {
 				Point nextPos = dir.from(currentPos);
@@ -162,15 +165,15 @@ public class SampleBotAi implements BotAi
 					validDirections.add(dir);
 				}
 			}
-			// If no valid directions, we're trapped
+
 			if (validDirections.isEmpty()) {
 				return score;
 			}
-			// Choose random direction from valid ones
+
 			Direction randomDir = validDirections.get(random.nextInt(validDirections.size()));
 			currentPos = randomDir.from(currentPos);
 			currentPos = wrapAround(currentPos, gameState.getPlanWidth(), gameState.getPlanHeight());
-			// Add position to simulated path
+
 			simulatedPath.add(new Point(currentPos.x, currentPos.y));
 			score += (step + 1) * 0.5;
 			score += random.nextDouble() * 0.1;
@@ -187,7 +190,7 @@ public class SampleBotAi implements BotAi
 		return score;
 	}
 
-	// Helper method to handle wrap-around
+	// an enhanced wrapAround method
 	private Point wrapAround(Point point, int width, int height) {
 		int x = (point.x + width) % width;
 		int y = (point.y + height) % height;

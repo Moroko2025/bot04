@@ -22,7 +22,7 @@ class DynamicBotAiTest
             for (int x = 0; x < width; x++) {
                 Point current = new Point(x, y);
 
-                // Walls at the borders
+
                 if (x == 0 || y == 0 || x == width - 1 || y == height - 1) {
                     sb.append('*');
                 }
