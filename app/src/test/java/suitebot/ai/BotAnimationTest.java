@@ -43,10 +43,10 @@ class BotAnimationTest
 
     @Test
     void animateBotWithTrail() throws InterruptedException {
-        int width = 15;
+        int width = 25;
         int height = 15;
         int botId = 1;
-        int steps = 50;
+        int steps = 150;
 
         Random random = new Random();
 

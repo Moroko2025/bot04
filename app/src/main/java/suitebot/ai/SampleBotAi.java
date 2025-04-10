@@ -12,6 +12,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import suitebot.strategies.AStarHeuristic;
+import suitebot.strategies.FloodFillHeuristic;
+
 import java.util.Map;
 import java.util.*;
 import java.util.Comparator;
@@ -110,7 +112,7 @@ public class SampleBotAi implements BotAi
 		this.gameState = gameState;
 
 		// Use A* heuristic with depth 20
-		Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, 20);
+		Map<Direction, Integer> moveScores = FloodFillHeuristic.evaluateMoves(botId, gameState, 18);
 
 		// Get current location
 		Point botLocation = gameState.getBotLocation(botId);
