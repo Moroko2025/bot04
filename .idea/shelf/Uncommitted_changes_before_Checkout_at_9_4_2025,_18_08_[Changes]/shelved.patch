@@ -1,0 +1,292 @@
+Index: app/src/test/java/suitebot/strategies/AStarHeuristicTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package suitebot.strategies;\n\nimport org.junit.jupiter.api.Test;\nimport suitebot.game.Direction;\nimport suitebot.game.GameState;\nimport suitebot.game.GameStateFactory;\nimport suitebot.game.Point;\n\nimport java.util.*;\n\nimport static org.junit.jupiter.api.Assertions.assertEquals;\n\nclass AStarHeuristicTest {\n    // The game state prints only last digit of the evaluation for readability ot the table\n    private void printGameState(GameState gameState, Map<Direction, Integer> moveScores) {\n        int width = gameState.getPlanWidth();\n        int height = gameState.getPlanHeight();\n        Set<Point> obstacles = gameState.getObstacleLocations();\n        Point botLocation = gameState.getBotLocation(1);\n\n        char[][] grid = new char[height][width];\n        for (char[] row : grid) {\n            Arrays.fill(row, ' ');\n        }\n\n        for (Point obs : obstacles) {\n            grid[obs.y][obs.x] = '*';\n        }\n\n        grid[botLocation.y][botLocation.x] = 'B';\n\n        for (Direction dir : moveScores.keySet()) {\n            Point next = dir.from(botLocation);\n            grid[next.y][next.x] = Character.forDigit(moveScores.get(dir) % 10, 10);\n        }\n\n        for (char[] row : grid) {\n            System.out.println(new String(row));\n        }\n    }\n\n    @Test\n    void testEvaluateMoves_SimpleCase() {\n        GameState gameState = GameStateFactory.createFromString(\"**********\\n\" +\n                \"*1       *\\n\" +\n                \"*        *\\n\" +\n                \"*        *\\n\" +\n                \"*        *\\n\" +\n                \"*        *\\n\" +\n                \"*        *\\n\" +\n                \"*        *\\n\" +\n                \"*        *\\n\" +\n                \"**********\");\n        int botId = 1;\n        int maxDepth = 9;\n        Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, maxDepth);\n        printGameState(gameState, moveScores);\n        assertEquals(49, moveScores.get(Direction.RIGHT));\n        assertEquals(46, moveScores.get(Direction.DOWN));\n        assertEquals(0, moveScores.get(Direction.LEFT));\n        assertEquals(0, moveScores.get(Direction.UP));\n    }\n\n    @Test\n    void testEvaluateMoves_ObstacleBlockingPath() {\n        GameState gameState = GameStateFactory.createFromString(\"**********\\n\" +\n                \"*1   *****\\n\" +\n                \"** *******\\n\" +\n                \"**     ***\\n\" +\n                \"**********\\n\" +\n                \"*****    *\\n\" +\n                \"*        *\\n\" +\n                \"*        *\\n\" +\n                \"*        *\\n\" +\n                \"**********\");\n        int botId = 1;\n        int maxDepth = 9;\n        Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, maxDepth);\n        printGameState(gameState, moveScores);\n        assertEquals(10, moveScores.get(Direction.RIGHT));\n        assertEquals(0, moveScores.get(Direction.DOWN));\n    }\n\n    @Test\n    void testEvaluateMoves_MultiplePaths() {\n        GameState gameState = GameStateFactory.createFromString(\"* ********\\n\" +\n                \"*1   *****\\n\" +\n                \"*  *******\\n\" +\n                \"**********\\n\" +\n                \"**********\\n\" +\n                \"*   ******\\n\" +\n                \"*        *\\n\" +\n                \"*        *\\n\" +\n                \"*        *\\n\" +\n                \"* ********\");\n        int botId = 1;\n        int maxDepth = 9;\n        Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, maxDepth);\n        printGameState(gameState, moveScores);\n        assertEquals(29, moveScores.get(Direction.UP));\n        assertEquals(22, moveScores.get(Direction.RIGHT));\n        assertEquals(22, moveScores.get(Direction.DOWN));\n        assertEquals(0, moveScores.get(Direction.LEFT));\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/test/java/suitebot/strategies/AStarHeuristicTest.java b/app/src/test/java/suitebot/strategies/AStarHeuristicTest.java
+--- a/app/src/test/java/suitebot/strategies/AStarHeuristicTest.java	(revision 514ec1bb3c31ef097b6afcea75b16034a310cee3)
++++ b/app/src/test/java/suitebot/strategies/AStarHeuristicTest.java	(date 1744218172106)
+@@ -54,6 +54,8 @@
+         int botId = 1;
+         int maxDepth = 9;
+         Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, maxDepth);
++
++        System.out.println(moveScores);
+         printGameState(gameState, moveScores);
+         assertEquals(49, moveScores.get(Direction.RIGHT));
+         assertEquals(46, moveScores.get(Direction.DOWN));
+Index: app/src/main/java/suitebot/ai/SampleBotAi.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package suitebot.ai;\nimport com.google.common.collect.ImmutableList;\nimport suitebot.game.Direction;\nimport suitebot.game.GameState;\nimport suitebot.game.ImmutableGameState;\nimport suitebot.game.Point;\nimport java.util.ArrayList;\nimport java.util.Collections;\nimport java.util.List;\nimport java.util.Optional;\nimport java.util.function.Predicate;\nimport java.util.function.Supplier;\nimport java.util.stream.Stream;\nimport suitebot.strategies.AStarHeuristic;\nimport java.util.Map;\nimport java.util.Comparator;\n\n/**\n * Sample AI. The AI has some serious flaws, which is intentional.\n */\npublic class SampleBotAi implements BotAi\n{\n\t/**\n\t * Your bot id\n\t */\n\tprivate int botId;\n\t/**\n\t * The data of the game on the basis of which you choose your move\n\t */\n\tprivate GameState gameState;\n\n\n\tprivate final Predicate<Direction> isSafeDirection = direction -> (\n\t\t\t!gameState.getObstacleLocations().contains(destination(direction)) &&\n\t\t\t!gameState.getBotLocations().contains(destination(direction))\n\t);\n\n\t/**\n\t * If a random safe move can be made (one that avoids any obstacles), do it;\n\t * otherwise, go down.\n\t */\n\n\t@Override\n\tpublic Direction makeMove(int botId, GameState gameState)\n\t{\n\t\tthis.botId = botId;\n\t\tthis.gameState = gameState;\n\n\t\tMap<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, 10);\n\t\tif (moveScores.isEmpty()) {\n\t\t\treturn Direction.DOWN;\n\t\t} else {\n\t\t\t// maximum score\n\t\t\tint maxScore = Collections.max(moveScores.values());\n\n\t\t\t// Find all the directions with maximum score\n\t\t\tList<Direction> bestDirections = new ArrayList<>();\n\t\t\tfor (Map.Entry<Direction, Integer> entry : moveScores.entrySet()) {\n\t\t\t\tif (entry.getValue() == maxScore) {\n\t\t\t\t\tbestDirections.add(entry.getKey());\n\t\t\t\t}\n\t\t\t}\n\n\t\t\t// If there are multiple directions with the same maximum score, choose the one that we know it's not headed to one\n\t\t\tif (bestDirections.size() > 1) {\n\t\t\t\tfor (Direction direction : bestDirections) {\n\t\t\t\t\tPoint nextPosition = direction.from(gameState.getBotLocation(botId));\n\t\t\t\t\tif (!gameState.getObstacleLocations().contains(nextPosition) && !gameState.getBotLocations().contains(nextPosition)) {\n\t\t\t\t\t\treturn direction;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\n\t\t\t// if no one is found avoiding obstacles, just return the first one.\n\t\t\treturn bestDirections.get(0);\n\t\t}\n\t}\n\n\n\tprivate Point destination(Direction direction)\n\t{\n\t\tPoint botLocation = gameState.getBotLocation(botId);\n\n\t\tPoint stepDestination = direction.from(botLocation);\n\t\tint width = gameState.getPlanWidth();\n\t\tint height = gameState.getPlanHeight();\n//\t\tint x = (stepDestination.x + width) % width;\n//\t\tint y = (stepDestination.y + height) % height;\n\n\t\tstepDestination = new Point(\n\t\t\t\t(stepDestination.x + width) % width,\n\t\t\t\t(stepDestination.y + height) % height\n\t\t);\n\t\treturn stepDestination;\n\n\t}\n\n\t@Override\n\tpublic String getName()\n\t{\n\t\treturn \"Chill guys\";\n\t}\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/suitebot/ai/SampleBotAi.java b/app/src/main/java/suitebot/ai/SampleBotAi.java
+--- a/app/src/main/java/suitebot/ai/SampleBotAi.java	(revision 514ec1bb3c31ef097b6afcea75b16034a310cee3)
++++ b/app/src/main/java/suitebot/ai/SampleBotAi.java	(date 1744218172076)
+@@ -1,9 +1,10 @@
+ package suitebot.ai;
++
+ import com.google.common.collect.ImmutableList;
+ import suitebot.game.Direction;
+ import suitebot.game.GameState;
+-import suitebot.game.ImmutableGameState;
+ import suitebot.game.Point;
++
+ import java.util.ArrayList;
+ import java.util.Collections;
+ import java.util.List;
+@@ -11,10 +12,10 @@
+ import java.util.function.Predicate;
+ import java.util.function.Supplier;
+ import java.util.stream.Stream;
++
+ import suitebot.strategies.AStarHeuristic;
+ import java.util.Map;
+ import java.util.Comparator;
+-
+ /**
+  * Sample AI. The AI has some serious flaws, which is intentional.
+  */
+@@ -40,6 +41,34 @@
+ 	 * otherwise, go down.
+ 	 */
+ 
++//	@Override
++//	public Direction makeMove(int botId, GameState gameState)
++//	{
++//		this.botId = botId;
++//		this.gameState = gameState;
++//
++//
++//		//Available directions - based on game plan orientation, not the bot actual direction
++//		List<Direction> directions = new ArrayList<>(ImmutableList.of(
++//				Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN));
++//		//random schuffle directions
++//		Collections.shuffle(directions);
++//
++//		Supplier<Stream<Direction>> safeDirectionSupplier = () -> directions.stream().filter(isSafeDirection);
++//
++//		//selects first available free direction (random - because the direction list is in different order every time)
++//		//TODO: this is just example app,
++//		// you should implement exception handling, timing verification, and proper algorithm ;o) ...
++//		return Stream.of(
++//				safeDirectionSupplier
++//		)
++//				.map(Supplier::get)
++//				.map(Stream::findFirst)
++//				.filter(Optional::isPresent)
++//				.map(Optional::get)
++//				.findFirst()
++//				.orElse(Direction.DOWN);
++//	}
+ 	@Override
+ 	public Direction makeMove(int botId, GameState gameState)
+ 	{
+@@ -48,12 +77,13 @@
+ 
+ 		Map<Direction, Integer> moveScores = AStarHeuristic.evaluateMoves(botId, gameState, 10);
+ 		if (moveScores.isEmpty()) {
++			// If there are no possible moves, return Down as a default
+ 			return Direction.DOWN;
+ 		} else {
+-			// maximum score
++			// Find the maximum score
+ 			int maxScore = Collections.max(moveScores.values());
+ 
+-			// Find all the directions with maximum score
++			// Find all directions with the maximum score
+ 			List<Direction> bestDirections = new ArrayList<>();
+ 			for (Map.Entry<Direction, Integer> entry : moveScores.entrySet()) {
+ 				if (entry.getValue() == maxScore) {
+@@ -61,7 +91,7 @@
+ 				}
+ 			}
+ 
+-			// If there are multiple directions with the same maximum score, choose the one that we know it's not headed to one
++			// If there are multiple directions with the same maximum score, choose the one that avoids obstacles
+ 			if (bestDirections.size() > 1) {
+ 				for (Direction direction : bestDirections) {
+ 					Point nextPosition = direction.from(gameState.getBotLocation(botId));
+@@ -71,12 +101,14 @@
+ 				}
+ 			}
+ 
+-			// if no one is found avoiding obstacles, just return the first one.
++			// If no direction avoids obstacles, return the first direction with the maximum score
+ 			return bestDirections.get(0);
+ 		}
+ 	}
+ 
+ 
++
++
+ 	private Point destination(Direction direction)
+ 	{
+ 		Point botLocation = gameState.getBotLocation(botId);
+@@ -98,6 +130,6 @@
+ 	@Override
+ 	public String getName()
+ 	{
+-		return "Chill guys";
++		return "Sample AI";
+ 	}
+ }
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"b0d1b945-1683-40b2-9c70-9dbad17048bb\" name=\"Changes\" comment=\"Adding A star algorithm\" />\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ExternalProjectsData\">\r\n    <projectState path=\"$PROJECT_DIR$\">\r\n      <ProjectState />\r\n    </projectState>\r\n  </component>\r\n  <component name=\"ExternalProjectsManager\">\r\n    <system id=\"GRADLE\">\r\n      <state>\r\n        <task path=\"$PROJECT_DIR$\">\r\n          <activation />\r\n        </task>\r\n        <projects_view>\r\n          <tree_state>\r\n            <expand>\r\n              <path>\r\n                <item name=\"\" type=\"6a2764b6:ExternalProjectsStructure$RootNode\" />\r\n                <item name=\"SuiteBotClient\" type=\"f1a62948:ProjectNode\" />\r\n              </path>\r\n              <path>\r\n                <item name=\"\" type=\"6a2764b6:ExternalProjectsStructure$RootNode\" />\r\n                <item name=\"SuiteBotClient\" type=\"f1a62948:ProjectNode\" />\r\n                <item name=\"Tasks\" type=\"e4a08cd1:TasksNode\" />\r\n              </path>\r\n              <path>\r\n                <item name=\"\" type=\"6a2764b6:ExternalProjectsStructure$RootNode\" />\r\n                <item name=\"SuiteBotClient\" type=\"f1a62948:ProjectNode\" />\r\n                <item name=\"Tasks\" type=\"e4a08cd1:TasksNode\" />\r\n                <item name=\"verification\" type=\"c8890929:TasksNode$1\" />\r\n              </path>\r\n            </expand>\r\n            <select />\r\n          </tree_state>\r\n        </projects_view>\r\n      </state>\r\n    </system>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <favorite-branches>\r\n      <branch-storage>\r\n        <map>\r\n          <entry type=\"LOCAL\">\r\n            <value>\r\n              <list>\r\n                <branch-info repo=\"$PROJECT_DIR$\" source=\"karima-branch\" />\r\n              </list>\r\n            </value>\r\n          </entry>\r\n        </map>\r\n      </branch-storage>\r\n    </favorite-branches>\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"main\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MavenImportPreferences\">\r\n    <option name=\"importingSettings\">\r\n      <MavenImportingSettings>\r\n        <option name=\"jdkForImporter\" value=\"17\" />\r\n      </MavenImportingSettings>\r\n    </option>\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 2\n}</component>\r\n  <component name=\"ProjectId\" id=\"2edKDPB4FAXtIU4GK4wPdb2h7A8\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"Application.BotServer (1).executor\": \"Run\",\n    \"Application.BotServer.executor\": \"Run\",\n    \"Downloaded.Files.Path.Enabled\": \"false\",\n    \"Gradle.BotAiRequestHandlerTest.executor\": \"Run\",\n    \"Gradle.Build Client.executor\": \"Run\",\n    \"Gradle.Build bot01.executor\": \"Run\",\n    \"Gradle.Build bot04.executor\": \"Run\",\n    \"Gradle.Client [:BotServer.main()].executor\": \"Debug\",\n    \"Gradle.DirectionTest.executor\": \"Run\",\n    \"Gradle.GameStateFactoryTest.executor\": \"Run\",\n    \"Gradle.ImmutableGameStateBuilderTest (1).executor\": \"Run\",\n    \"Gradle.ImmutableGameStateBuilderTest.executor\": \"Run\",\n    \"Gradle.ImmutableGameStateTest.executor\": \"Run\",\n    \"Gradle.PointTest.executor\": \"Run\",\n    \"Gradle.SampleBotAiTest.executor\": \"Run\",\n    \"Gradle.SampleBotAiTest.testAvoidsObstacles2.executor\": \"Debug\",\n    \"Gradle.SimpleServerTest.executor\": \"Run\",\n    \"Gradle.Tests in 'SuiteBotKit.app.test'.executor\": \"Run\",\n    \"Gradle.Tests in 'suitebot'.executor\": \"Run\",\n    \"Gradle.Tests in 'suitebot.game'.executor\": \"Run\",\n    \"Gradle.Upgrade Gradle wrapper.executor\": \"Run\",\n    \"Gradle.bot01 [build].executor\": \"Run\",\n    \"Gradle.bot01 [run].executor\": \"Run\",\n    \"Gradle.bot01 [test].executor\": \"Run\",\n    \"Gradle.bot01:app [:app:BotServer.main()].executor\": \"Debug\",\n    \"Gradle.bot04 [test].executor\": \"Run\",\n    \"Repository.Attach.Annotations\": \"false\",\n    \"Repository.Attach.JavaDocs\": \"false\",\n    \"Repository.Attach.Sources\": \"false\",\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"RunOnceActivity.git.unshallow\": \"true\",\n    \"SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\n    \"git-widget-placeholder\": \"karima-branch\",\n    \"kotlin-language-version-configured\": \"true\",\n    \"last_opened_file_path\": \"C:/webdev/SuiteBot/bots/bot01/app/src/test/java/suitebot\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.detected.package.tslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"npm\",\n    \"project.structure.last.edited\": \"Project\",\n    \"project.structure.proportion\": \"0.15\",\n    \"project.structure.side.proportion\": \"0.45632184\",\n    \"settings.editor.selected.configurable\": \"settings.sync\",\n    \"vue.rearranger.settings.migration\": \"true\"\n  }\n}]]></component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\webdev\\SuiteBot\\bots\\bot01\\app\\src\\test\\java\\suitebot\" />\r\n      <recent name=\"C:\\webdev\\SuiteBot\\bots\\bot01\\app\\src\\main\\java\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Gradle.bot04 [test]\">\r\n    <configuration name=\"BotServer\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"suitebot.BotServer\" />\r\n      <module name=\"SuiteBotClient.app\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"suitebot.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"BotAiRequestHandlerTest\" type=\"GradleRunConfiguration\" factoryName=\"Gradle\" temporary=\"true\">\r\n      <ExternalSystemSettings>\r\n        <option name=\"executionName\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"externalSystemIdString\" value=\"GRADLE\" />\r\n        <option name=\"scriptParameters\" value=\"\" />\r\n        <option name=\"taskDescriptions\">\r\n          <list />\r\n        </option>\r\n        <option name=\"taskNames\">\r\n          <list>\r\n            <option value=\":app:test\" />\r\n            <option value=\"--tests\" />\r\n            <option value=\"&quot;suitebot.BotAiRequestHandlerTest&quot;\" />\r\n          </list>\r\n        </option>\r\n        <option name=\"vmOptions\" />\r\n      </ExternalSystemSettings>\r\n      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>\r\n      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>\r\n      <DebugAllEnabled>false</DebugAllEnabled>\r\n      <RunAsTest>true</RunAsTest>\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"SampleBotAiTest\" type=\"GradleRunConfiguration\" factoryName=\"Gradle\" temporary=\"true\">\r\n      <ExternalSystemSettings>\r\n        <option name=\"executionName\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"externalSystemIdString\" value=\"GRADLE\" />\r\n        <option name=\"scriptParameters\" value=\"\" />\r\n        <option name=\"taskDescriptions\">\r\n          <list />\r\n        </option>\r\n        <option name=\"taskNames\">\r\n          <list>\r\n            <option value=\":app:test\" />\r\n            <option value=\"--tests\" />\r\n            <option value=\"&quot;suitebot.ai.SampleBotAiTest&quot;\" />\r\n          </list>\r\n        </option>\r\n        <option name=\"vmOptions\" />\r\n      </ExternalSystemSettings>\r\n      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>\r\n      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>\r\n      <DebugAllEnabled>false</DebugAllEnabled>\r\n      <RunAsTest>true</RunAsTest>\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"SimpleServerTest\" type=\"GradleRunConfiguration\" factoryName=\"Gradle\" temporary=\"true\">\r\n      <ExternalSystemSettings>\r\n        <option name=\"executionName\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"externalSystemIdString\" value=\"GRADLE\" />\r\n        <option name=\"scriptParameters\" value=\"\" />\r\n        <option name=\"taskDescriptions\">\r\n          <list />\r\n        </option>\r\n        <option name=\"taskNames\">\r\n          <list>\r\n            <option value=\":app:test\" />\r\n            <option value=\"--tests\" />\r\n            <option value=\"&quot;suitebot.server.SimpleServerTest&quot;\" />\r\n          </list>\r\n        </option>\r\n        <option name=\"vmOptions\" />\r\n      </ExternalSystemSettings>\r\n      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>\r\n      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>\r\n      <DebugAllEnabled>false</DebugAllEnabled>\r\n      <RunAsTest>true</RunAsTest>\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"bot04 [test]\" type=\"GradleRunConfiguration\" factoryName=\"Gradle\" temporary=\"true\">\r\n      <ExternalSystemSettings>\r\n        <option name=\"executionName\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"externalSystemIdString\" value=\"GRADLE\" />\r\n        <option name=\"scriptParameters\" />\r\n        <option name=\"taskDescriptions\">\r\n          <list />\r\n        </option>\r\n        <option name=\"taskNames\">\r\n          <list>\r\n            <option value=\"test\" />\r\n          </list>\r\n        </option>\r\n        <option name=\"vmOptions\" />\r\n      </ExternalSystemSettings>\r\n      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>\r\n      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>\r\n      <DebugAllEnabled>false</DebugAllEnabled>\r\n      <RunAsTest>false</RunAsTest>\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <list>\r\n      <item itemvalue=\"Application.BotServer\" />\r\n      <item itemvalue=\"Gradle.bot04 [test]\" />\r\n      <item itemvalue=\"Gradle.BotAiRequestHandlerTest\" />\r\n      <item itemvalue=\"Gradle.SampleBotAiTest\" />\r\n      <item itemvalue=\"Gradle.SimpleServerTest\" />\r\n    </list>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Gradle.bot04 [test]\" />\r\n        <item itemvalue=\"Application.BotServer\" />\r\n        <item itemvalue=\"Gradle.SampleBotAiTest\" />\r\n        <item itemvalue=\"Gradle.SimpleServerTest\" />\r\n        <item itemvalue=\"Gradle.BotAiRequestHandlerTest\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46\" />\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"b0d1b945-1683-40b2-9c70-9dbad17048bb\" name=\"Changes\" comment=\"\" />\r\n      <created>1712228896735</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1712228896735</updated>\r\n      <workItem from=\"1712228897773\" duration=\"506000\" />\r\n      <workItem from=\"1712311579441\" duration=\"5188000\" />\r\n      <workItem from=\"1712557696744\" duration=\"17016000\" />\r\n      <workItem from=\"1744191005189\" duration=\"5994000\" />\r\n      <workItem from=\"1744197626461\" duration=\"3603000\" />\r\n      <workItem from=\"1744204239154\" duration=\"4684000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Adding A star algorithm\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1744208400110</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1744208400110</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Adding A star algorithm\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Adding A star algorithm\" />\r\n  </component>\r\n  <component name=\"XDebuggerManager\">\r\n    <breakpoint-manager>\r\n      <breakpoints>\r\n        <line-breakpoint enabled=\"true\" type=\"java-line\">\r\n          <url>file://$PROJECT_DIR$/main/suitebot/ai/SampleBotAi.java</url>\r\n          <line>54</line>\r\n          <option name=\"timeStamp\" value=\"3\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" type=\"java-line\">\r\n          <url>file://$PROJECT_DIR$/app/src/main/java/suitebot_orig/BotRequestHandler.java</url>\r\n          <line>48</line>\r\n          <option name=\"timeStamp\" value=\"15\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" type=\"java-line\">\r\n          <url>file://$PROJECT_DIR$/app/src/main/java/suitebot/game/Direction.java</url>\r\n          <line>21</line>\r\n          <option name=\"timeStamp\" value=\"33\" />\r\n        </line-breakpoint>\r\n      </breakpoints>\r\n    </breakpoint-manager>\r\n  </component>\r\n  <component name=\"XSLT-Support.FileAssociations.UIState\">\r\n    <expand />\r\n    <select />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 514ec1bb3c31ef097b6afcea75b16034a310cee3)
++++ b/.idea/workspace.xml	(date 1744218188563)
+@@ -4,7 +4,11 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="b0d1b945-1683-40b2-9c70-9dbad17048bb" name="Changes" comment="Adding A star algorithm" />
++    <list default="true" id="b0d1b945-1683-40b2-9c70-9dbad17048bb" name="Changes" comment="Adding A star algorithm">
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/suitebot/ai/SampleBotAi.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/suitebot/ai/SampleBotAi.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/test/java/suitebot/strategies/AStarHeuristicTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/suitebot/strategies/AStarHeuristicTest.java" afterDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -82,56 +86,56 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "Application.BotServer (1).executor": "Run",
+-    "Application.BotServer.executor": "Run",
+-    "Downloaded.Files.Path.Enabled": "false",
+-    "Gradle.BotAiRequestHandlerTest.executor": "Run",
+-    "Gradle.Build Client.executor": "Run",
+-    "Gradle.Build bot01.executor": "Run",
+-    "Gradle.Build bot04.executor": "Run",
+-    "Gradle.Client [:BotServer.main()].executor": "Debug",
+-    "Gradle.DirectionTest.executor": "Run",
+-    "Gradle.GameStateFactoryTest.executor": "Run",
+-    "Gradle.ImmutableGameStateBuilderTest (1).executor": "Run",
+-    "Gradle.ImmutableGameStateBuilderTest.executor": "Run",
+-    "Gradle.ImmutableGameStateTest.executor": "Run",
+-    "Gradle.PointTest.executor": "Run",
+-    "Gradle.SampleBotAiTest.executor": "Run",
+-    "Gradle.SampleBotAiTest.testAvoidsObstacles2.executor": "Debug",
+-    "Gradle.SimpleServerTest.executor": "Run",
+-    "Gradle.Tests in 'SuiteBotKit.app.test'.executor": "Run",
+-    "Gradle.Tests in 'suitebot'.executor": "Run",
+-    "Gradle.Tests in 'suitebot.game'.executor": "Run",
+-    "Gradle.Upgrade Gradle wrapper.executor": "Run",
+-    "Gradle.bot01 [build].executor": "Run",
+-    "Gradle.bot01 [run].executor": "Run",
+-    "Gradle.bot01 [test].executor": "Run",
+-    "Gradle.bot01:app [:app:BotServer.main()].executor": "Debug",
+-    "Gradle.bot04 [test].executor": "Run",
+-    "Repository.Attach.Annotations": "false",
+-    "Repository.Attach.JavaDocs": "false",
+-    "Repository.Attach.Sources": "false",
+-    "RunOnceActivity.OpenProjectViewOnStart": "true",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "RunOnceActivity.git.unshallow": "true",
+-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+-    "git-widget-placeholder": "karima-branch",
+-    "kotlin-language-version-configured": "true",
+-    "last_opened_file_path": "C:/webdev/SuiteBot/bots/bot01/app/src/test/java/suitebot",
+-    "node.js.detected.package.eslint": "true",
+-    "node.js.detected.package.tslint": "true",
+-    "node.js.selected.package.eslint": "(autodetect)",
+-    "node.js.selected.package.tslint": "(autodetect)",
+-    "nodejs_package_manager_path": "npm",
+-    "project.structure.last.edited": "Project",
+-    "project.structure.proportion": "0.15",
+-    "project.structure.side.proportion": "0.45632184",
+-    "settings.editor.selected.configurable": "settings.sync",
+-    "vue.rearranger.settings.migration": "true"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;Application.BotServer (1).executor&quot;: &quot;Run&quot;,
++    &quot;Application.BotServer.executor&quot;: &quot;Run&quot;,
++    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
++    &quot;Gradle.BotAiRequestHandlerTest.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.Build Client.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.Build bot01.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.Build bot04.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.Client [:BotServer.main()].executor&quot;: &quot;Debug&quot;,
++    &quot;Gradle.DirectionTest.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.GameStateFactoryTest.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.ImmutableGameStateBuilderTest (1).executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.ImmutableGameStateBuilderTest.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.ImmutableGameStateTest.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.PointTest.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.SampleBotAiTest.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.SampleBotAiTest.testAvoidsObstacles2.executor&quot;: &quot;Debug&quot;,
++    &quot;Gradle.SimpleServerTest.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.Tests in 'SuiteBotKit.app.test'.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.Tests in 'suitebot'.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.Tests in 'suitebot.game'.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.Upgrade Gradle wrapper.executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.bot01 [build].executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.bot01 [run].executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.bot01 [test].executor&quot;: &quot;Run&quot;,
++    &quot;Gradle.bot01:app [:app:BotServer.main()].executor&quot;: &quot;Debug&quot;,
++    &quot;Gradle.bot04 [test].executor&quot;: &quot;Run&quot;,
++    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
++    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
++    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
++    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
++    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;karima-branch&quot;,
++    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
++    &quot;last_opened_file_path&quot;: &quot;C:/webdev/SuiteBot/bots/bot01/app/src/test/java/suitebot&quot;,
++    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
++    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
++    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
++    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
++    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
++    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
++    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
++    &quot;project.structure.side.proportion&quot;: &quot;0.45632184&quot;,
++    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
++    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="RecentsManager">
+     <key name="CopyFile.RECENT_KEYS">
+       <recent name="C:\webdev\SuiteBot\bots\bot01\app\src\test\java\suitebot" />
+@@ -284,7 +288,7 @@
+       <workItem from="1712557696744" duration="17016000" />
+       <workItem from="1744191005189" duration="5994000" />
+       <workItem from="1744197626461" duration="3603000" />
+-      <workItem from="1744204239154" duration="4684000" />
++      <workItem from="1744204239154" duration="11942000" />
+     </task>
+     <task id="LOCAL-00001" summary="Adding A star algorithm">
+       <option name="closed" value="true" />
+@@ -294,7 +298,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1744208400110</updated>
+     </task>
+-    <option name="localTasksCounter" value="2" />
++    <task id="LOCAL-00002" summary="Adding A star algorithm">
++      <option name="closed" value="true" />
++      <created>1744209033117</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1744209033117</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
