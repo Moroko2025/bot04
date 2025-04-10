@@ -110,80 +110,55 @@ public class SampleBotAi implements BotAi
 	public Direction makeMove(int botId, GameState gameState) {
 		this.botId = botId;
 		this.gameState = gameState;
-
-		// Use A* heuristic with depth 20
-		Map<Direction, Integer> moveScores = FloodFillHeuristic.evaluateMoves(botId, gameState, 18);
-
 		// Get current location
 		Point botLocation = gameState.getBotLocation(botId);
+		// Get obstacles including other bots
 		Set<Point> allObstacles = new HashSet<>(gameState.getObstacleLocations());
-
-		// Add other bots as obstacles to avoid
 		for (Point botPos : gameState.getBotLocations()) {
 			if (!botPos.equals(botLocation)) {
 				allObstacles.add(botPos);
 			}
 		}
-
-		// Create a priority list that will consider:
-		// 1. Safety (not hitting anything)
-		// 2. Score (preferring higher scores)
-		// 3. Free space in immediate vicinity (avoiding tight corridors)
-		List<Direction> prioritizedDirections = new ArrayList<>();
-
-		// Create a map to store free spaces in each direction
-		Map<Direction, Integer> freeSpaceCount = new EnumMap<>(Direction.class);
-
+		// Step 1: Use FloodFill to evaluate immediate moves (maintain original strategy)
+		Map<Direction, Integer> floodFillScores = FloodFillHeuristic.evaluateMoves(botId, gameState, 20);
+		// Step 2: Use Monte Carlo simulation to improve move selection
+		Map<Direction, Double> monteCarloScores = runMonteCarloSimulation(botLocation, allObstacles);
+		// Combine both strategies
+		List<Direction> validDirections = new ArrayList<>();
+		Map<Direction, Double> combinedScores = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			Point nextPos = dir.from(botLocation);
 			nextPos = wrapAround(nextPos, gameState.getPlanWidth(), gameState.getPlanHeight());
-
 			// Skip immediate collisions
 			if (allObstacles.contains(nextPos)) {
 				continue;
-
-
 			}
-
-			// Calculate free spaces in immediate vicinity (1 step in each direction)
-			int freeSpaces = 0;
-			for (Direction checkDir : Direction.values()) {
-				Point checkPos = checkDir.from(nextPos);
-				checkPos = wrapAround(checkPos, gameState.getPlanWidth(), gameState.getPlanHeight());
-				if (!allObstacles.contains(checkPos)) {
-					freeSpaces++;
+			validDirections.add(dir);
+			// Calculate free spaces (from original code)
+			int freeSpaces = countFreeSpaces(nextPos, allObstacles);
+			// Combine scores with weights (adjust weights for fine-tuning)
+			double floodFillScore = floodFillScores.getOrDefault(dir, 0) * 1.0;
+			double monteCarloScore = monteCarloScores.getOrDefault(dir, 0.0) * 5.0; // Higher weight for Monte Carlo
+			double freeSpaceScore = freeSpaces * 0.5;
+			combinedScores.put(dir, floodFillScore + monteCarloScore + freeSpaceScore);
+		}
+		// Find best direction
+		if (!validDirections.isEmpty()) {
+			Direction bestDir = validDirections.get(0);
+			double bestScore = combinedScores.getOrDefault(bestDir, 0.0);
+			for (Direction dir : validDirections) {
+				double score = combinedScores.getOrDefault(dir, 0.0);
+				if (score > bestScore) {
+					bestScore = score;
+					bestDir = dir;
 				}
 			}
-
-			freeSpaceCount.put(dir, freeSpaces);
-			prioritizedDirections.add(dir);
+			return bestDir;
 		}
-
-		// Sort directions by:
-		// 1. A* score (higher is better)
-		// 2. Free space count (higher is better)
-		if (!prioritizedDirections.isEmpty()) {
-			prioritizedDirections.sort((dir1, dir2) -> {
-				int score1 = moveScores.getOrDefault(dir1, 0);
-				int score2 = moveScores.getOrDefault(dir2, 0);
-
-				if (score1 != score2) {
-					return Integer.compare(score2, score1); // Higher score first
-				}
-
-				// If scores are equal, prefer direction with more free spaces
-				return Integer.compare(freeSpaceCount.getOrDefault(dir2, 0),
-						freeSpaceCount.getOrDefault(dir1, 0));
-			});
-
-			return prioritizedDirections.get(0);
-		}
-
 		// If no good moves, try random directions as a last resort
 		List<Direction> directions = new ArrayList<>(Arrays.asList(
 				Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN));
 		Collections.shuffle(directions);
-
 		for (Direction dir : directions) {
 			Point nextPos = dir.from(botLocation);
 			nextPos = wrapAround(nextPos, gameState.getPlanWidth(), gameState.getPlanHeight());
@@ -191,12 +166,99 @@ public class SampleBotAi implements BotAi
 				return dir;
 			}
 		}
-
 		// If all else fails
 		return Direction.DOWN;
 	}
-
-	// Helper method to handle wrap-around
+	/**
+	 * Count free spaces around a position
+	 */
+	private int countFreeSpaces(Point position, Set<Point> obstacles) {
+		int freeSpaces = 0;
+		for (Direction checkDir : Direction.values()) {
+			Point checkPos = checkDir.from(position);
+			checkPos = wrapAround(checkPos, gameState.getPlanWidth(), gameState.getPlanHeight());
+			if (!obstacles.contains(checkPos)) {
+				freeSpaces++;
+			}
+		}
+		return freeSpaces;
+	}
+	/**
+	 * Run Monte Carlo simulations to evaluate each possible move
+	 */
+	private Map<Direction, Double> runMonteCarloSimulation(Point botLocation, Set<Point> obstacles) {
+		Map<Direction, Double> scores = new EnumMap<>(Direction.class);
+		int numSimulations = 500; // Adjust based on performance needs
+		// For each possible direction
+		for (Direction dir : Direction.values()) {
+			Point nextPos = dir.from(botLocation);
+			nextPos = wrapAround(nextPos, gameState.getPlanWidth(), gameState.getPlanHeight());
+			// Skip immediate collisions
+			if (obstacles.contains(nextPos)) {
+				scores.put(dir, 0.0);
+				continue;
+			}
+			double totalScore = 0.0;
+			// Run multiple random simulations from this position
+			for (int i = 0; i < numSimulations; i++) {
+				totalScore += simulateRandomPath(nextPos, obstacles, 20); // Simulate 20 steps ahead
+			}
+			scores.put(dir, totalScore / numSimulations);
+		}
+		return scores;
+	}
+	/**
+	 * Simulate a random path from a position and return survival score
+	 */
+	private double simulateRandomPath(Point startPos, Set<Point> originalObstacles, int depth) {
+		// Clone obstacles to avoid modifying the original set
+		Set<Point> obstacles = new HashSet<>(originalObstacles);
+		Point currentPos = new Point(startPos.x, startPos.y);
+		double score = 0.0;
+		Random random = new Random();
+		// Add starting position to the path (simulating bot's trail)
+		Set<Point> simulatedPath = new HashSet<>();
+		simulatedPath.add(new Point(currentPos.x, currentPos.y));
+		// Run the simulation for specified depth
+		for (int step = 0; step < depth; step++) {
+			// Get valid directions (those that don't lead to immediate collision)
+			List<Direction> validDirections = new ArrayList<>();
+			for (Direction dir : Direction.values()) {
+				Point nextPos = dir.from(currentPos);
+				nextPos = wrapAround(nextPos, gameState.getPlanWidth(), gameState.getPlanHeight());
+				if (!obstacles.contains(nextPos) && !simulatedPath.contains(nextPos)) {
+					validDirections.add(dir);
+				}
+			}
+			// If no valid directions, we're trapped
+			if (validDirections.isEmpty()) {
+				return score;
+			}
+			// Choose random direction from valid ones
+			Direction randomDir = validDirections.get(random.nextInt(validDirections.size()));
+			currentPos = randomDir.from(currentPos);
+			currentPos = wrapAround(currentPos, gameState.getPlanWidth(), gameState.getPlanHeight());
+			// Add position to simulated path
+			simulatedPath.add(new Point(currentPos.x, currentPos.y));
+			// Add to score - higher scores for later steps (survived longer)
+			score += (step + 1) * 0.5;
+			// Add some randomness to score to prevent getting stuck in local maxima
+			score += random.nextDouble() * 0.1;
+		}
+		// Add final position evaluation - count free spaces around the final position
+		int freeSpacesAtEnd = 0;
+		for (Direction dir : Direction.values()) {
+			Point checkPos = dir.from(currentPos);
+			checkPos = wrapAround(checkPos, gameState.getPlanWidth(), gameState.getPlanHeight());
+			if (!obstacles.contains(checkPos) && !simulatedPath.contains(checkPos)) {
+				freeSpacesAtEnd++;
+			}
+		}
+		// Bonus for ending in a position with more free spaces
+		score += freeSpacesAtEnd * 2.0;
+		return score;
+	}
+	// Helper method to handle wrap-around (unchanged)
 	private Point wrapAround(Point point, int width, int height) {
 		int x = (point.x + width) % width;
 		int y = (point.y + height) % height;

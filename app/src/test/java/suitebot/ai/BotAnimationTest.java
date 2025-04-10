@@ -44,15 +44,15 @@ class BotAnimationTest
     @Test
     void animateBotWithTrail() throws InterruptedException {
         int width = 25;
-        int height = 15;
+        int height = 25;
         int botId = 1;
-        int steps = 150;
+        int steps = 25;
 
         Random random = new Random();
 
         // Generate random obstacles (less density)
         Set<Point> obstacles = new HashSet<>();
-        int obstacleCount = 10; // fewer obstacles for more freedom
+        int obstacleCount = 50; // fewer obstacles for more freedom
         while (obstacles.size() < obstacleCount) {
             int x = 1 + random.nextInt(width - 2);
             int y = 1 + random.nextInt(height - 2);
@@ -69,6 +69,7 @@ class BotAnimationTest
             String gameStateString = generateGameStateString(width, height, botId, botPosition, obstacles);
             printGameState(gameStateString);
             sleep(300); // Control speed
+            System.out.println(i);
 
             GameState gameState = GameStateFactory.createFromString(gameStateString);
             Direction move = sampleBot.makeMove(botId, gameState);
